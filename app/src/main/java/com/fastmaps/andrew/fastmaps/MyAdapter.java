@@ -3,6 +3,7 @@ package com.fastmaps.andrew.fastmaps;
 import android.content.Context;
 import android.media.Image;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,22 +18,23 @@ import java.util.List;
  * Created by Andrew on 6/15/2015.
  */
 public class MyAdapter extends RecyclerView.Adapter <MyAdapter.MyViewHolder> {
-    private LayoutInflater inflater;
     List<MapData> mapDataList = Collections.emptyList();
-    MyAdapter (Context context, List<MapData> mapDataList) {
-        inflater = LayoutInflater.from(context);
+    MyAdapter ( List<MapData> mapDataList) {
+        this.mapDataList = mapDataList;
+        Log.d("constructor", "Constructor called");
     }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.custom_row,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_row,parent,false);
         MyViewHolder holder = new MyViewHolder(view);
-
+        Log.d("onCreateViewHolder", "created MyViewHolder");
         return holder;
     }
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
+        Log.d("onBindViewHolder", "ran onBindViewHolder");
         MapData mapData = mapDataList.get(position);
         holder.primaryText.setText(mapData.name);
         holder.secondaryText.setText(mapData.address);
@@ -42,7 +44,8 @@ public class MyAdapter extends RecyclerView.Adapter <MyAdapter.MyViewHolder> {
 
     @Override
     public int getItemCount() {
-        return 0;
+        Log.d("getItemCount", "getItemCount was run. size = " + mapDataList.size());
+        return mapDataList.size();
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
@@ -52,9 +55,9 @@ public class MyAdapter extends RecyclerView.Adapter <MyAdapter.MyViewHolder> {
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            primaryText = (TextView) primaryText.findViewById(R.id.primary_text);
-            secondaryText = (TextView) secondaryText.findViewById(R.id.secondary_text);
-            imageButton = (ImageButton) imageButton.findViewById(R.id.image_button);
+            primaryText = (TextView) itemView.findViewById(R.id.primary_text);
+            secondaryText = (TextView) itemView.findViewById(R.id.secondary_text);
+            imageButton = (ImageButton) itemView.findViewById(R.id.image_button);
         }
 }
 
