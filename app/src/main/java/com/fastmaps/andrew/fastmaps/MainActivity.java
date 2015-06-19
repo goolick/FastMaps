@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -20,7 +21,6 @@ import com.melnykov.fab.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -29,9 +29,11 @@ public class MainActivity extends ActionBarActivity {
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView mRecyclerView;
     private FloatingActionButton floatingActionButton;
+   // private DefaultItemAnimator mDefaultItemAnimator;
     private static List<MapData> mapDataList = new ArrayList<>(25);
     public static Boolean Updated = false;
-
+    public final long ADD_DURATION = 700;
+    public final long DELETE_DURATION = 700;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,16 +49,21 @@ public class MainActivity extends ActionBarActivity {
                 ShowDialog();
             }
         });
-        InitMapData();
 
-        /* Create LinearLayoutManager and Adapter*/
+        // Create LinearLayoutManager and Adapter
         mLayoutManager = new LinearLayoutManager(this);
         mAdapter = new MyAdapter(mapDataList);
 
-        /* Create RecyclerView and connect to LayoutManager and Adapter */
+        // Set up DefaultItemAnimator with fade in/out times
+        DefaultItemAnimator defaultItemAnimator = new DefaultItemAnimator();
+        defaultItemAnimator.setAddDuration(ADD_DURATION);
+        defaultItemAnimator.setRemoveDuration(DELETE_DURATION);
+
+        // Create RecyclerView and connect to LayoutManager, Adapter, and Item Animator
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setItemAnimator(defaultItemAnimator);
 
     }
 
@@ -64,9 +71,10 @@ public class MainActivity extends ActionBarActivity {
     protected void onResume() {
         super.onResume();
         if (Updated) {
-            mRecyclerView.getAdapter().notifyDataSetChanged();
+            mRecyclerView.getAdapter().notifyItemInserted(mapDataList.size());
             Log.d("updated", "updated dataset");
         }
+        Log.d("OnResume", "call to OnResume");
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -75,28 +83,19 @@ public class MainActivity extends ActionBarActivity {
         return true;
     }
 
-    public static void AddData(String name, String address){
+    public static void AddData(String name, String place){
 /* Take in a name and place and add them to the list of MapData */
 
         MapData newMapData = new MapData();
-        newMapData.address = address;
-        newMapData.name = name;
-        Log.e("Name and address","Name = " + newMapData.name + " address = " + newMapData.address);
+        newMapData.setName(name);
+        newMapData.setPlace(place);
+        Log.e("Name and address","Name = " + newMapData.getName() + " place = " + newMapData.getPlace());
         mapDataList.add(newMapData);
         Log.e("AddData","Data added. Count = " + mapDataList.size());
         Updated = false;
 
     }
 
-
-    public static List<MapData> InitMapData(){
-        MapData mapData = new MapData();
-        mapData.address = "init address";
-        mapData.name = "init name";
-        mapDataList.add(0,mapData);
-
-        return mapDataList;
-    }
 
     public void ShowDialog(){
         FragmentManager fragmentManager = getFragmentManager();
@@ -105,17 +104,17 @@ public class MainActivity extends ActionBarActivity {
         searchDialog.show(fragmentManager,"");
     }
 
-    public void Navigate(MapData mapData){
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        // Uncomment line below to use chooser
-        // Intent chooser = null;
 
-        //intent.setData((Uri.parse(mapData.address)));
-        intent.setData((Uri.parse("geo:19,70")));
-        startActivity(intent);
-        // Uncomment lines below to use chooser
-        //chooser = intent.createChooser(intent, "Launch Maps");
-        //startActivity(chooser);
+
+    public static void Navigate(MapData mapData, Context context){
+        Log.d("navigate", "Navigate method called on " + mapData.getPlace());
+
+    // create intent to navigate to the destination contained in mapData.place
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + mapData.getPlace()) );
+    // add flag in order to start activity from RecyclerView
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    // Get application context and Launch activity to handle the intent
+        context.getApplicationContext().startActivity(intent);
     }
 
     @Override

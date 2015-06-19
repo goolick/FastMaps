@@ -23,16 +23,17 @@ public class SearchDialog extends DialogFragment{
         View view = inflater.inflate(R.layout.search_dialog, container);
         getDialog().setTitle("Add Shortcut");
 
+
         final EditText editTextName = (EditText) view.findViewById(R.id.editTextName);
-        final EditText editTextAddress = (EditText) view.findViewById(R.id.editTextAddress);
+        final EditText editTextPlace = (EditText) view.findViewById(R.id.editTextPlace);
         final Context context = getActivity();
 
         Button button = (Button) view.findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Boolean checkName = editTextName.getText().toString().equals("");
-                Boolean checkPlace = editTextAddress.getText().toString().equals("");
+                Boolean checkName = editTextName.getText().toString().equals(""); // Make sure Name field is filled
+                Boolean checkPlace = editTextPlace.getText().toString().equals(""); // Make sure Place field is filled
                 Log.d("checkName", checkName.toString());
                 Log.d("checkPlace", checkPlace.toString());
 
@@ -45,7 +46,7 @@ public class SearchDialog extends DialogFragment{
                     }
                 }
                 else {
-                    MainActivity.AddData(editTextName.getText().toString(), editTextAddress.getText().toString());
+                    MainActivity.AddData(editTextName.getText().toString(), editTextPlace.getText().toString());
                     MainActivity.Updated = true;
                     dismiss();
                 }

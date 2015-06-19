@@ -1,5 +1,6 @@
 package com.fastmaps.andrew.fastmaps;
 
+
 import android.widget.ImageButton;
 
 /**
@@ -7,8 +8,24 @@ import android.widget.ImageButton;
  */
 public class MapData {
 
-    String name = "name";
-    String address = "address";
+    private String name;
+    private String place;
+    ImageButton imageButton;
 
-    // ImageButton imageButton;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPlace() {
+        return place;
+    }
+
+    public void setPlace(String place) {
+        this.place = place;
+    }
 }

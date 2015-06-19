@@ -5,4 +5,5 @@
     <string name="default_secondary_text">Address of location 1</string>
     <string name="dialog_confirm">Add</string>
     <string name="dialog_name">Name</string>
+    <string name="dialog_place">Place</string>
 </resources>
