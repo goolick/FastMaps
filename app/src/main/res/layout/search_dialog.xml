@@ -13,7 +13,9 @@
         android:textSize="@dimen/abc_text_size_medium_material"
         android:ems="15"
         android:id="@+id/editTextName"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/abc_action_bar_icon_vertical_padding_material"
+        android:layout_marginBottom="@dimen/abc_action_bar_icon_vertical_padding_material"/>
 
     <AutoCompleteTextView
         android:theme="@style/AppTheme"
@@ -24,15 +26,19 @@
         android:textSize="@dimen/abc_text_size_medium_material"
         android:ems="15"
         android:id="@+id/editTextPlace"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/abc_action_bar_icon_vertical_padding_material"/>
 
     <Button
+        style="?android:attr/borderlessButtonStyle"
         android:theme="@style/AppTheme"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/dialog_confirm"
         android:id="@+id/button"
-        android:layout_gravity="end" />
+        android:layout_gravity="end"
+        android:textColor="@color/primaryColor"
+         />
 
 
 </LinearLayout>

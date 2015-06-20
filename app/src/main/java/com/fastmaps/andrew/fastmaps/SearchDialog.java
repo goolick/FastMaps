@@ -23,7 +23,6 @@ public class SearchDialog extends DialogFragment{
         View view = inflater.inflate(R.layout.search_dialog, container);
         getDialog().setTitle("Add Shortcut");
 
-
         final EditText editTextName = (EditText) view.findViewById(R.id.editTextName);
         final EditText editTextPlace = (EditText) view.findViewById(R.id.editTextPlace);
         final Context context = getActivity();

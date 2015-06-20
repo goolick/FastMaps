@@ -2,6 +2,7 @@ package com.fastmaps.andrew.fastmaps;
 
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -96,11 +97,10 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
-
+    // Public method to open the SearchDialog, which allows the user to enter a new map location
     public void ShowDialog(){
         FragmentManager fragmentManager = getFragmentManager();
         SearchDialog searchDialog = new SearchDialog();
-
         searchDialog.show(fragmentManager,"");
     }
 
@@ -114,7 +114,23 @@ public class MainActivity extends ActionBarActivity {
     // add flag in order to start activity from RecyclerView
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     // Get application context and Launch activity to handle the intent
-        context.getApplicationContext().startActivity(intent);
+    // Handle exceptions in case the user does not have a maps application available
+        try { context.getApplicationContext().startActivity(intent);
+        }
+        catch (ActivityNotFoundException e){
+            try {
+                Intent unrestrictedIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(mapData.getPlace()));
+                unrestrictedIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.getApplicationContext().startActivity(unrestrictedIntent);
+                Toast.makeText(context.getApplicationContext(), "Install Google Maps for best results", Toast.LENGTH_LONG)
+                     .show();
+            }
+            catch (ActivityNotFoundException e2){
+                Toast.makeText(context.getApplicationContext(), "No Maps application available!", Toast.LENGTH_LONG)
+                        .show();
+            }
+        }
+
     }
 
     @Override
