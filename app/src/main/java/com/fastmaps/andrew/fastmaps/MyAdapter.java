@@ -52,12 +52,19 @@ public class MyAdapter extends RecyclerView.Adapter <MyAdapter.MyViewHolder>{
         holder.primaryText.setText(mapData.getName());
         holder.secondaryText.setText(mapData.getPlace());
 
-        holder.imageButton.setOnClickListener(new View.OnClickListener(){
+        holder.navButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
             MainActivity.Navigate(mapData, v.getContext());
             }
         });
+        holder.dirButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+            MainActivity.Direct(mapData, v.getContext());
+            }
+        });
+
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -97,15 +104,16 @@ public class MyAdapter extends RecyclerView.Adapter <MyAdapter.MyViewHolder>{
     class MyViewHolder extends RecyclerView.ViewHolder {
         TextView primaryText;
         TextView secondaryText;
-        ImageButton imageButton;
+        ImageButton navButton;
+        ImageButton dirButton;
 
         public MyViewHolder(View itemView) {
             super(itemView);
 
             primaryText = (TextView) itemView.findViewById(R.id.primary_text);
             secondaryText = (TextView) itemView.findViewById(R.id.secondary_text);
-            imageButton = (ImageButton) itemView.findViewById(R.id.image_button);
-
+            navButton = (ImageButton) itemView.findViewById(R.id.image_button_nav);
+            dirButton = (ImageButton) itemView.findViewById(R.id.image_button_dir);
             }
         }
 

@@ -30,7 +30,7 @@ public class MainActivity extends ActionBarActivity {
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView mRecyclerView;
     private FloatingActionButton floatingActionButton;
-   // private DefaultItemAnimator mDefaultItemAnimator;
+
     private static List<MapData> mapDataList = new ArrayList<>(25);
     public static Boolean Updated = false;
     public final long ADD_DURATION = 700;
@@ -106,32 +106,36 @@ public class MainActivity extends ActionBarActivity {
 
 
 
-    public static void Navigate(MapData mapData, Context context){
+    public static void Navigate(MapData mapData, Context context) {
         Log.d("navigate", "Navigate method called on " + mapData.getPlace());
 
-    // create intent to navigate to the destination contained in mapData.place
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + mapData.getPlace()) );
-    // add flag in order to start activity from RecyclerView
+        // create intent to navigate to the destination contained in mapData.place
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + mapData.getPlace()));
+        // add flag in order to start activity from RecyclerView
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    // Get application context and Launch activity to handle the intent
-    // Handle exceptions in case the user does not have a maps application available
-        try { context.getApplicationContext().startActivity(intent);
+        // Get application context and Launch activity to handle the intent
+        // Handle exceptions in case the user does not have a maps application available
+        try {
+            context.getApplicationContext().startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(context.getApplicationContext(), "Install Google Maps for best results", Toast.LENGTH_LONG)
+                    .show();
         }
-        catch (ActivityNotFoundException e){
-            try {
-                Intent unrestrictedIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(mapData.getPlace()));
-                unrestrictedIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.getApplicationContext().startActivity(unrestrictedIntent);
-                Toast.makeText(context.getApplicationContext(), "Install Google Maps for best results", Toast.LENGTH_LONG)
-                     .show();
-            }
-            catch (ActivityNotFoundException e2){
-                Toast.makeText(context.getApplicationContext(), "No Maps application available!", Toast.LENGTH_LONG)
-                        .show();
-            }
         }
+    public static void Direct(MapData mapData, Context context) {
+        Log.d("Direct", "Direct method called on " + mapData.getPlace());
 
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + mapData.getPlace()));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.getApplicationContext().startActivity(intent);
+
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(context.getApplicationContext(), "No Maps application available!", Toast.LENGTH_LONG)
+                    .show();
+        }
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
