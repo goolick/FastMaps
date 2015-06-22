@@ -3,8 +3,9 @@
     android:id="@+id/custom_row"
     android:orientation="vertical"
     android:layout_width="match_parent"
+    android:minHeight="75dp"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/abc_action_bar_default_padding_material">
+    android:paddingBottom="@dimen/abc_button_padding_vertical_material">
 
         <TextView
             android:id="@+id/primary_text"
@@ -12,7 +13,7 @@
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/abc_button_padding_vertical_material"
             android:textSize="@dimen/abc_text_size_headline_material"
-            android:textColor="#000000"
+            android:textColor="@color/primaryColorMoreDark"
             android:text="@string/default_primary_text"
             />
 
@@ -22,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/primary_text"
             android:textSize="@dimen/abc_text_size_body_2_material"
-            android:textColor="@color/primaryColorDark"
+            android:textColor="#828282"
             android:text="@string/default_secondary_text"
             android:layout_marginBottom="@dimen/abc_action_bar_default_padding_material"
             android:layout_alignParentLeft="true"
@@ -33,20 +34,21 @@
 
 
         <ImageButton
+            android:theme="@style/AppTheme"
             android:id="@+id/image_button_nav"
-            android:src="@drawable/ic_navigation_black_24dp"
+            android:src="@drawable/nav_selector"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@color/backgroundColor"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-
             />
 
         <ImageButton
+            android:theme="@style/AppTheme"
             android:id="@+id/image_button_dir"
-            android:src="@drawable/ic_place_black_24dp"
+            android:src="@drawable/place_selector"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@color/backgroundColor"
@@ -55,5 +57,7 @@
             android:layout_toStartOf="@+id/image_button_nav"
             android:paddingRight="@dimen/abc_button_padding_horizontal_material"
             android:paddingEnd="@dimen/abc_button_padding_horizontal_material"
-            android:paddingLeft="@dimen/abc_button_padding_horizontal_material"/>
+
+
+            />
     </RelativeLayout>

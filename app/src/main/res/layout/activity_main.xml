@@ -8,13 +8,16 @@
     android:theme="@style/AppTheme.Base">
 
     <android.support.v7.widget.RecyclerView
+        android:theme="@style/AppTheme"
         android:id="@+id/my_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/fab" />
 
     <com.melnykov.fab.FloatingActionButton
+        android:theme="@style/AppTheme"
         android:id="@+id/fab"
+        android:backgroundTint="@color/fab_color_selector"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
@@ -23,5 +26,49 @@
         android:layout_alignRight="@+id/my_recycler_view"
         android:layout_alignEnd="@+id/my_recycler_view"
         android:layout_marginBottom="@dimen/abc_action_bar_icon_vertical_padding_material"/>
+
+    <RadioGroup
+        android:theme="@style/AppTheme"
+        android:id="@+id/radio_group"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/my_recycler_view"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/abc_action_bar_default_padding_material"
+        android:layout_toLeftOf="@+id/fab"
+        android:layout_toStartOf="@+id/fab"
+        android:checkedButton="@+id/drive_button">
+
+
+        <RadioButton
+            android:id="@+id/walk_button"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@color/backgroundColor"
+            android:button="@drawable/walk_selector"
+            />
+
+        <RadioButton
+            android:id="@+id/bike_button"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@color/backgroundColor"
+            android:button="@drawable/bike_selector"
+            />
+
+        <RadioButton
+            android:id="@+id/drive_button"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@color/backgroundColor"
+            android:button="@drawable/car_selector"
+
+
+
+            />
+
+
+
+    </RadioGroup>
 
 </RelativeLayout>

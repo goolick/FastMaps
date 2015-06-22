@@ -6,6 +6,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -15,6 +16,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.melnykov.fab.FloatingActionButton;
@@ -30,16 +33,37 @@ public class MainActivity extends ActionBarActivity {
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView mRecyclerView;
     private FloatingActionButton floatingActionButton;
+    private RadioGroup radioGroup;
+    private RadioButton walkButton;
+    private RadioButton bikeButton;
+    private RadioButton driveButton;
+
+
 
     private static List<MapData> mapDataList = new ArrayList<>(25);
     public static Boolean Updated = false;
+    public static int Radio_selected;
     public final long ADD_DURATION = 700;
     public final long DELETE_DURATION = 700;
+    public static final int WALK_BUTTON = 1;
+    public static final int BIKE_BUTTON = 2;
+    public static final int DRIVE_BUTTON = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Set up radiogroup
+        radioGroup = (RadioGroup) findViewById(R.id.radio_group);
+
+        //Find buttons and set IDs
+        walkButton = (RadioButton) findViewById(R.id.walk_button);
+
+        driveButton = (RadioButton) findViewById(R.id.drive_button);
+
+        bikeButton = (RadioButton) findViewById(R.id.bike_button);
+
 
 
         /* Reference to FAB and onClickListener - show the dialog box upon click */
@@ -66,8 +90,31 @@ public class MainActivity extends ActionBarActivity {
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setItemAnimator(defaultItemAnimator);
 
-    }
 
+
+        walkButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Radio_selected = WALK_BUTTON;
+            }
+        });
+
+        bikeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Radio_selected = BIKE_BUTTON;
+            }
+        });
+
+        driveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Radio_selected = DRIVE_BUTTON;
+            }
+        });
+
+
+    }
     @Override
     protected void onResume() {
         super.onResume();
@@ -104,13 +151,30 @@ public class MainActivity extends ActionBarActivity {
         searchDialog.show(fragmentManager,"");
     }
 
-
+    public int GetRadioID (){
+        return radioGroup.getCheckedRadioButtonId();
+    }
 
     public static void Navigate(MapData mapData, Context context) {
         Log.d("navigate", "Navigate method called on " + mapData.getPlace());
-
+        Log.d("radiobutton", "radio selected: " + Radio_selected);
         // create intent to navigate to the destination contained in mapData.place
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + mapData.getPlace()));
+        // switch on selected radio button
+
+        Intent intent;
+        switch (Radio_selected){
+            case WALK_BUTTON: intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + mapData.getPlace() + "&mode=w"));
+                 break;
+
+            case BIKE_BUTTON: intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + mapData.getPlace() + "&mode=b"));
+                 break;
+
+            default: intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + mapData.getPlace()));
+                     break;
+        }
+
+
+
         // add flag in order to start activity from RecyclerView
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         // Get application context and Launch activity to handle the intent
@@ -146,7 +210,8 @@ public class MainActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            mapDataList.clear();
+            mAdapter.notifyDataSetChanged();
         }
 
         return super.onOptionsItemSelected(item);
