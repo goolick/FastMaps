@@ -10,8 +10,7 @@ public class MapData {
 
     private String name;
     private String place;
-    //ImageButton navButton;
-    //ImageButton dirButton;
+
 
     public String getName() {
         return name;

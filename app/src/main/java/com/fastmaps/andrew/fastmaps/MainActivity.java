@@ -1,12 +1,10 @@
 package com.fastmaps.andrew.fastmaps;
 
-import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -17,28 +15,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.melnykov.fab.FloatingActionButton;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 
 public class MainActivity extends ActionBarActivity {
 
     private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView mRecyclerView;
-    private FloatingActionButton floatingActionButton;
-    private RadioGroup radioGroup;
-    private RadioButton walkButton;
-    private RadioButton bikeButton;
-    private RadioButton driveButton;
-
-
 
     private static List<MapData> mapDataList = new ArrayList<>(25);
     public static Boolean Updated = false;
@@ -51,20 +39,41 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        RecyclerView.LayoutManager mLayoutManager;
+        FloatingActionButton floatingActionButton;
+        RadioButton walkButton;
+        RadioButton bikeButton;
+        RadioButton driveButton;
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Set up radiogroup
-        radioGroup = (RadioGroup) findViewById(R.id.radio_group);
-
-        //Find buttons and set IDs
+        //Find buttons and set use OnClickListeners to keep track of currently selected button
         walkButton = (RadioButton) findViewById(R.id.walk_button);
-
         driveButton = (RadioButton) findViewById(R.id.drive_button);
-
         bikeButton = (RadioButton) findViewById(R.id.bike_button);
+        walkButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Radio_selected = WALK_BUTTON;
+            }
+        });
+        bikeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Radio_selected = BIKE_BUTTON;
+            }
+        });
+        driveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Radio_selected = DRIVE_BUTTON;
+            }
+        });
 
-
+        // Get data from SQLiteDatabse
+        MyDatabaseAdapter myDatabaseAdapter = new MyDatabaseAdapter(this);
+        mapDataList = myDatabaseAdapter.GetAllData();
 
         /* Reference to FAB and onClickListener - show the dialog box upon click */
         floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
@@ -89,37 +98,27 @@ public class MainActivity extends ActionBarActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setItemAnimator(defaultItemAnimator);
-
-
-
-        walkButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Radio_selected = WALK_BUTTON;
-            }
-        });
-
-        bikeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Radio_selected = BIKE_BUTTON;
-            }
-        });
-
-        driveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Radio_selected = DRIVE_BUTTON;
-            }
-        });
-
-
     }
+
+    @Override
+    protected void onStop() {
+        Log.d("onStop", "onStop run");
+        // When the activity is stopped, replace all data in SQLite databse with what is contained
+        // in mapDataList variable
+        MyDatabaseAdapter myDatabaseAdapter = new MyDatabaseAdapter(this);
+        myDatabaseAdapter.DeleteAllData();
+        for (int i = 0; i< mapDataList.size(); i++){
+            myDatabaseAdapter.AddData(mapDataList.get(i).getName(), mapDataList.get(i).getPlace());
+            Log.d("for", "" + i + " " + mapDataList.get(i).getName() + " " +  mapDataList.get(i).getPlace());
+        }
+        super.onStop();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         if (Updated) {
-            mRecyclerView.getAdapter().notifyItemInserted(mapDataList.size());
+            mRecyclerView.getAdapter().notifyDataSetChanged();
             Log.d("updated", "updated dataset");
         }
         Log.d("OnResume", "call to OnResume");
@@ -132,7 +131,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public static void AddData(String name, String place){
-/* Take in a name and place and add them to the list of MapData */
+    // Take in a name and place and add them to the list of MapData */
 
         MapData newMapData = new MapData();
         newMapData.setName(name);
@@ -149,18 +148,14 @@ public class MainActivity extends ActionBarActivity {
         FragmentManager fragmentManager = getFragmentManager();
         SearchDialog searchDialog = new SearchDialog();
         searchDialog.show(fragmentManager,"");
-    }
 
-    public int GetRadioID (){
-        return radioGroup.getCheckedRadioButtonId();
     }
 
     public static void Navigate(MapData mapData, Context context) {
         Log.d("navigate", "Navigate method called on " + mapData.getPlace());
-        Log.d("radiobutton", "radio selected: " + Radio_selected);
+
         // create intent to navigate to the destination contained in mapData.place
         // switch on selected radio button
-
         Intent intent;
         switch (Radio_selected){
             case WALK_BUTTON: intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + mapData.getPlace() + "&mode=w"));
@@ -172,11 +167,9 @@ public class MainActivity extends ActionBarActivity {
             default: intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + mapData.getPlace()));
                      break;
         }
-
-
-
         // add flag in order to start activity from RecyclerView
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
         // Get application context and Launch activity to handle the intent
         // Handle exceptions in case the user does not have a maps application available
         try {
@@ -193,14 +186,11 @@ public class MainActivity extends ActionBarActivity {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + mapData.getPlace()));
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.getApplicationContext().startActivity(intent);
-
         } catch (ActivityNotFoundException e) {
             Toast.makeText(context.getApplicationContext(), "No Maps application available!", Toast.LENGTH_LONG)
                     .show();
         }
     }
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -213,9 +203,6 @@ public class MainActivity extends ActionBarActivity {
             mapDataList.clear();
             mAdapter.notifyDataSetChanged();
         }
-
         return super.onOptionsItemSelected(item);
     }
-
-
 }

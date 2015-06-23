@@ -117,6 +117,7 @@ public class PlaceAutocompleteAdapter
             protected FilterResults performFiltering(CharSequence constraint) {
                 FilterResults results = new FilterResults();
                 // Skip the autocomplete query if no constraints are given.
+
                 if (constraint != null) {
                     // Query the autocomplete API for the (constraint) search string.
                     mResultList = getAutocomplete(constraint);

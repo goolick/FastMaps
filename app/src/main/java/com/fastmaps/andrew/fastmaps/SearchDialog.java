@@ -21,10 +21,15 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.GeoDataApi;
+import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Andrew on 6/16/2015.
@@ -98,12 +103,15 @@ public class SearchDialog extends DialogFragment{
         Log.d("adapter", "googleapiclient built and connected");
 
 
+        // Create filter to ensure places supplied by Google Place API are navigable
+        List<Integer> filterTypes = new ArrayList<Integer>();
+        filterTypes.add(Place.TYPE_STREET_ADDRESS);
+        AutocompleteFilter filter = AutocompleteFilter.create(filterTypes);
+
         // Create and attach adapter
         mAdapter = new PlaceAutocompleteAdapter(context, android.R.layout.simple_list_item_1,
-                mGoogleApiClient, BOUNDS_GREATER_SYDNEY, null);
+                mGoogleApiClient, BOUNDS_GREATER_SYDNEY, filter);
         autoCompleteTextView.setAdapter(mAdapter);
-
-
         return view;
     }
 

@@ -32,7 +32,7 @@ public class MyAdapter extends RecyclerView.Adapter <MyAdapter.MyViewHolder>{
     }
     public void DeleteRow (int position){
         mapDataList.remove(position);
-        notifyItemRemoved(position);
+        notifyDataSetChanged();
         Log.d("DeleteRow", "ran DeleteRow on row " + position);
     }
 
