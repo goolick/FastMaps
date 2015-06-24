@@ -24,9 +24,6 @@ import com.google.android.gms.location.places.Places;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Andrew on 6/16/2015.
- */
 public class SearchDialog extends DialogFragment{
 
     /**
@@ -41,8 +38,10 @@ public class SearchDialog extends DialogFragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.search_dialog, container);
 
+        // Add title to Dialog
         getDialog().setTitle("Add Shortcut");
 
+        // Maximize the width of the dialog box
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(getDialog().getWindow().getAttributes());
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
@@ -50,19 +49,23 @@ public class SearchDialog extends DialogFragment{
         getDialog().show();
         getDialog().getWindow().setAttributes(lp);
 
+        // Get layout components
         final EditText editTextName = (EditText) view.findViewById(R.id.editTextName);
         final AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) view.findViewById(R.id.autoCompleteTextView);
+
+        // Get context from activity that called the dialog box
         final Context context = getActivity();
 
+        // Action for 'Add' button
         Button button = (Button) view.findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // If both fields are filled, call the AddData method in MainActivity on the entries
                 Boolean checkName = editTextName.getText().toString().equals(""); // Make sure Name field is filled
                 Boolean checkPlace = autoCompleteTextView.getText().toString().equals(""); // Make sure Place field is filled
                 Log.d("checkName", checkName.toString());
                 Log.d("checkPlace", checkPlace.toString());
-
                 if (checkName || checkPlace) {
                     if (checkPlace) {
                         Toast.makeText(context, "Enter Place", Toast.LENGTH_SHORT).show();
@@ -72,12 +75,12 @@ public class SearchDialog extends DialogFragment{
                     }
                 }
                 else {
+                    // Call AddData and set the Updated flag as true
                     MainActivity.AddData(editTextName.getText().toString(), autoCompleteTextView.getText().toString());
                     MainActivity.Updated = true;
                     dismiss();
-                }
+                    }
             }
-
         });
 
         //Setup GoogleApiClient for getting autocomplete information
@@ -87,9 +90,6 @@ public class SearchDialog extends DialogFragment{
                 .addApi(LocationServices.API)
                 .build();
         mGoogleApiClient.connect();
-
-        Log.d("adapter", "googleapiclient built and connected");
-
 
         // Create filter to ensure places supplied by Google Place API are navigable
         List<Integer> filterTypes = new ArrayList<Integer>();

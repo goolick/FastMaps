@@ -20,9 +20,6 @@ import org.w3c.dom.Text;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Created by Andrew on 6/15/2015.
- */
 public class MyAdapter extends RecyclerView.Adapter <MyAdapter.MyViewHolder>{
     List<MapData> mapDataList = Collections.emptyList();
     MyAdapter ( List<MapData> mapDataList) {
@@ -92,14 +89,12 @@ public class MyAdapter extends RecyclerView.Adapter <MyAdapter.MyViewHolder>{
                 return false;
             }
         });
-
     }
 
     @Override
     public int getItemCount() {
         return mapDataList.size();
     }
-
 
     class MyViewHolder extends RecyclerView.ViewHolder {
         TextView primaryText;

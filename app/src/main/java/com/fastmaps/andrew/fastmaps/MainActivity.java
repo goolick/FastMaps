@@ -5,7 +5,6 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
@@ -36,7 +35,7 @@ public class MainActivity extends ActionBarActivity {
     private static List<MapData> mapDataList = new ArrayList<>(25);
     public static Boolean Updated = false;
     public static LatLngBounds CURRENT_BOUNDS;
-    public static int Radio_selected;
+    public static int Radio_selected = 3;
     public final long ADD_DURATION = 700;
     public final long DELETE_DURATION = 700;
     public static final int WALK_BUTTON = 1;
@@ -128,6 +127,10 @@ public class MainActivity extends ActionBarActivity {
             myDatabaseAdapter.AddData(mapDataList.get(i).getName(), mapDataList.get(i).getPlace());
             Log.d("for", "" + i + " " + mapDataList.get(i).getName() + " " +  mapDataList.get(i).getPlace());
         }
+
+        // When exiting the activity, reset Radio_Selected to drive, the default
+        Radio_selected = DRIVE_BUTTON;
+
         super.onStop();
     }
 
@@ -175,13 +178,13 @@ public class MainActivity extends ActionBarActivity {
         // switch on selected radio button
         Intent intent;
         switch (Radio_selected){
-            case WALK_BUTTON: intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + mapData.getPlace() + "&mode=w"));
+            case WALK_BUTTON: intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + mapData.getPlace() + "&mode=w" + "&types=geocode"));
                  break;
 
-            case BIKE_BUTTON: intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + mapData.getPlace() + "&mode=b"));
+            case BIKE_BUTTON: intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + mapData.getPlace() + "&mode=b" + "&types=geocode"));
                  break;
 
-            default: intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + mapData.getPlace()));
+            default: intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + mapData.getPlace() + "&types=geocode"));
                      break;
         }
         // add flag in order to start activity from RecyclerView
