@@ -1,12 +1,8 @@
 package com.fastmaps.andrew.fastmaps;
 
 
-import android.app.ActionBar;
-import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -22,11 +18,8 @@ import android.widget.Toast;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.AutocompleteFilter;
-import com.google.android.gms.location.places.GeoDataApi;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,10 +36,6 @@ public class SearchDialog extends DialogFragment{
     protected GoogleApiClient mGoogleApiClient;
     private PlaceAutocompleteAdapter mAdapter;
 
-    private static final LatLngBounds BOUNDS_GREATER_SYDNEY = new LatLngBounds(
-            new LatLng(-34.041458, 150.790100), new LatLng(-33.682247, 151.383362));
-
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -60,7 +49,6 @@ public class SearchDialog extends DialogFragment{
         lp.height= WindowManager.LayoutParams.WRAP_CONTENT;
         getDialog().show();
         getDialog().getWindow().setAttributes(lp);
-
 
         final EditText editTextName = (EditText) view.findViewById(R.id.editTextName);
         final AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) view.findViewById(R.id.autoCompleteTextView);
@@ -110,7 +98,7 @@ public class SearchDialog extends DialogFragment{
 
         // Create and attach adapter
         mAdapter = new PlaceAutocompleteAdapter(context, android.R.layout.simple_list_item_1,
-                mGoogleApiClient, BOUNDS_GREATER_SYDNEY, filter);
+                mGoogleApiClient,MainActivity.CURRENT_BOUNDS , filter);
         autoCompleteTextView.setAdapter(mAdapter);
         return view;
     }

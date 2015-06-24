@@ -4,6 +4,9 @@ import android.app.FragmentManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -17,6 +20,8 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.melnykov.fab.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -30,6 +35,7 @@ public class MainActivity extends ActionBarActivity {
 
     private static List<MapData> mapDataList = new ArrayList<>(25);
     public static Boolean Updated = false;
+    public static LatLngBounds CURRENT_BOUNDS;
     public static int Radio_selected;
     public final long ADD_DURATION = 700;
     public final long DELETE_DURATION = 700;
@@ -98,6 +104,17 @@ public class MainActivity extends ActionBarActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setItemAnimator(defaultItemAnimator);
+
+        // Use Network provided location to create bounds, used for Place autocomplete to favor
+        // current location
+        LocationManager mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        Location location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+        LatLng latlng1 = new LatLng(location.getLatitude() - 1, location.getLongitude() - 1);
+        LatLng latlng2 = new LatLng(location.getLatitude() + 1, location.getLongitude() + 1);
+
+        CURRENT_BOUNDS = new LatLngBounds(latlng1, latlng2);
+
     }
 
     @Override

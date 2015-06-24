@@ -26,7 +26,8 @@
         android:ems="15"
         android:id="@+id/autoCompleteTextView"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="@dimen/abc_action_bar_icon_vertical_padding_material"/>
+        android:layout_marginBottom="@dimen/abc_action_bar_icon_vertical_padding_material"
+        />
 
     <Button
         style="?android:attr/borderlessButtonStyle"
@@ -36,8 +37,7 @@
         android:text="@string/dialog_confirm"
         android:id="@+id/button"
         android:layout_gravity="end"
-        android:textColor="@color/primaryColor"
-         />
+        android:textColor="@color/primaryColor"/>
 
 
 </LinearLayout>

@@ -13,7 +13,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.fastmaps.andrew.fastmaps;
 
 import android.content.Context;
@@ -39,7 +38,6 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Adapter that handles Autocomplete requests from the Places Geo Data API.
-
  * objects
  * that contain both the Place ID and the text description from the autocomplete query.
  * <p>
@@ -146,7 +144,6 @@ public class PlaceAutocompleteAdapter
 
     /**
      * Submits an autocomplete query to the Places Geo Data Autocomplete API.
-
      * objects to store the Place ID and description that the API returns.
      * Returns an empty list if no results were found.
      * Returns null if the API client is not available or the query did not complete
