@@ -3,16 +3,12 @@ package com.fastmaps.andrew.fastmaps;
 
 import android.app.DialogFragment;
 import android.content.Context;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.DrawableContainer;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -96,10 +92,13 @@ public class SearchDialog extends DialogFragment{
         mGoogleApiClient.connect();
 
         /* As on 6/24/2015, Google Places API is not supporting the ADDRESS place type for
-        Autocomplete filter (mistake in documentation) Until then, the PlaceAutocompleteAdapter will
-        not return results. Unfiltered results should not be given, because many cases have been
-        observed where a non-navigable location is supplied. This could lead to the user mistakenly
-        starting a navigation to the incorrect location. For now, Autocomplete will not be used */
+        Autocomplete filter (there is a mistake in documentation suggesting otherwise)
+        Until then, the PlaceAutocompleteAdapter will not return results. Unfiltered results
+        should not be given, because several cases have been observed where a non-navigable location
+        is supplied. This could lead to the user mistakenly starting a navigation to the incorrect
+        location. For now, Autocomplete will not be used  The bug is being tracked at
+        https://code.google.com/p/gmaps-api-issues/issues/detail?id=7933
+        */
 
         // Create filter to ensure places supplied by Google Place API are navigable
         List<Integer> filterTypes = new ArrayList<>();
