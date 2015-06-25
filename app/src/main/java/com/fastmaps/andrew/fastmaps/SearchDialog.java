@@ -77,7 +77,7 @@ public class SearchDialog extends DialogFragment{
                 else {
                     // Call AddData and set the Updated flag as true
                     MainActivity.AddData(editTextName.getText().toString(), autoCompleteTextView.getText().toString());
-                    MainActivity.mAdapter.notifyDataSetChanged();
+                    MainActivity.mAdapter.notifyItemInserted(MainActivity.mAdapter.getItemCount());
                     dismiss();
                     }
             }

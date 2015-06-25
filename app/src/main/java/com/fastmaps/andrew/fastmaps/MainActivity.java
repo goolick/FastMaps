@@ -30,15 +30,16 @@ import java.util.List;
 public class MainActivity extends ActionBarActivity {
 
     static RecyclerView.Adapter mAdapter;
-
-    private static List<MapData> mapDataList = new ArrayList<>(25);
     public static LatLngBounds CURRENT_BOUNDS;
     public static int Radio_selected = 3;
-    public final long ADD_DURATION = 700;
+    public final long ADD_DURATION = 500;
     public final long DELETE_DURATION = 700;
     public static final int WALK_BUTTON = 1;
     public static final int BIKE_BUTTON = 2;
     public static final int DRIVE_BUTTON = 3;
+    public static final int MIN_ROW = 1;
+    public static final int MAX_ROW = 100;
+    private static List<MapData> mapDataList = new ArrayList<>(MAX_ROW);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -207,7 +208,7 @@ public class MainActivity extends ActionBarActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             mapDataList.clear();
-            mAdapter.notifyDataSetChanged();
+            mAdapter.notifyItemRangeRemoved(MIN_ROW,MAX_ROW);
         }
         return super.onOptionsItemSelected(item);
     }

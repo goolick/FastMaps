@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,8 +20,9 @@ public class MyAdapter extends RecyclerView.Adapter <MyAdapter.MyViewHolder>{
         this.mapDataList = mapDataList;
         Log.d("constructor", "Constructor called");
     }
-    public void DeleteRow (int position){
+    public void DeleteRow (int position) {
         mapDataList.remove(position);
+        notifyItemRemoved(position);
         notifyDataSetChanged();
         Log.d("DeleteRow", "ran DeleteRow on row " + position);
     }
@@ -67,8 +67,6 @@ public class MyAdapter extends RecyclerView.Adapter <MyAdapter.MyViewHolder>{
                             public void onClick(DialogInterface dialog, int which) {
                                 // Delete row
                                 DeleteRow(position);
-                                Toast.makeText(holder.itemView.getContext(), "Entry deleted", Toast.LENGTH_SHORT)
-                                        .show();
                                 dialog.cancel();
                             }
                         })
