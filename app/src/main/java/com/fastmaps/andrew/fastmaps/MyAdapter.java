@@ -33,7 +33,6 @@ public class MyAdapter extends RecyclerView.Adapter <MyAdapter.MyViewHolder>{
         Log.d("DeleteRow", "ran DeleteRow on row " + position);
     }
 
-
     @Override
     public MyViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
         final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_row,parent,false);

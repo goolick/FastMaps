@@ -3,6 +3,9 @@ package com.fastmaps.andrew.fastmaps;
 
 import android.app.DialogFragment;
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.DrawableContainer;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -31,7 +34,7 @@ public class SearchDialog extends DialogFragment{
      * to the user's sign in state as well as the Google's APIs.
      */
     protected GoogleApiClient mGoogleApiClient;
-    private PlaceAutocompleteAdapter mAdapter;
+    public PlaceAutocompleteAdapter mAdapter;
 
     @Nullable
     @Override
@@ -41,14 +44,15 @@ public class SearchDialog extends DialogFragment{
         // Add title to Dialog
         getDialog().setTitle("Add Shortcut");
 
-        // Maximize the width of the dialog box
+/*        // Maximize the width of the dialog box
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(getDialog().getWindow().getAttributes());
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height= WindowManager.LayoutParams.WRAP_CONTENT;
         getDialog().show();
-        getDialog().getWindow().setAttributes(lp);
 
+        getDialog().getWindow().setAttributes(lp);
+*/
         // Get layout components
         final EditText editTextName = (EditText) view.findViewById(R.id.editTextName);
         final AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) view.findViewById(R.id.autoCompleteTextView);
@@ -77,7 +81,7 @@ public class SearchDialog extends DialogFragment{
                 else {
                     // Call AddData and set the Updated flag as true
                     MainActivity.AddData(editTextName.getText().toString(), autoCompleteTextView.getText().toString());
-                    MainActivity.Updated = true;
+                    MainActivity.mAdapter.notifyDataSetChanged();
                     dismiss();
                     }
             }
@@ -91,8 +95,14 @@ public class SearchDialog extends DialogFragment{
                 .build();
         mGoogleApiClient.connect();
 
+        /* As on 6/24/2015, Google Places API is not supporting the ADDRESS place type for
+        Autocomplete filter (mistake in documentation) Until then, the PlaceAutocompleteAdapter will
+        not return results. Unfiltered results should not be given, because many cases have been
+        observed where a non-navigable location is supplied. This could lead to the user mistakenly
+        starting a navigation to the incorrect location. For now, Autocomplete will not be used */
+
         // Create filter to ensure places supplied by Google Place API are navigable
-        List<Integer> filterTypes = new ArrayList<Integer>();
+        List<Integer> filterTypes = new ArrayList<>();
         filterTypes.add(Place.TYPE_STREET_ADDRESS);
         AutocompleteFilter filter = AutocompleteFilter.create(filterTypes);
 

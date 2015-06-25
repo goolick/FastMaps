@@ -15,17 +15,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by Andrew on 6/22/2015.
- */
 public class MyDatabaseAdapter{
 
-    MyDatabaseHelper myDatabaseHelper;
+    protected MyDatabaseHelper myDatabaseHelper;
     public MyDatabaseAdapter (Context context){
         myDatabaseHelper= new MyDatabaseHelper(context);
     }
 
     public long AddData(String name, String place){
+        // method to add an entry (name/place) into SQLite db. returns id, which indicates whether
+        // the addition was successful
 
         SQLiteDatabase sqLiteDatabase = myDatabaseHelper.getWritableDatabase();
 
@@ -39,13 +38,15 @@ public class MyDatabaseAdapter{
     }
 
     public void DeleteAllData(){
-        Log.d("AddData", "Ran DeleteAllData");
+        // method to delete all data from SQLiteDatabase table
+        Log.d("DeleteAllData", "Ran DeleteAllData");
         SQLiteDatabase sqLiteDatabase = myDatabaseHelper.getWritableDatabase();
         sqLiteDatabase.execSQL(myDatabaseHelper.DELETE_TABLE);
         sqLiteDatabase.close();
     }
 
     public List<MapData> GetAllData(){
+        // method to retrieve all data from the SQLiteDatabase. Returns mapdataList to MainActivity
         Log.d("GetAllData", "Ran GetAllData");
         List<MapData> mapdataList = new ArrayList<>(25);
 
@@ -54,8 +55,8 @@ public class MyDatabaseAdapter{
         Cursor cursor = sqLiteDatabase.query(myDatabaseHelper.TABLE_NAME,columns,null,null,null,null,null);
 
         while(cursor.moveToNext()){
+            // the cursor iterates through the table, adding each data point to mapdataList
             MapData mapData = new MapData();
-            int id = cursor.getInt(cursor.getColumnIndex(myDatabaseHelper.UID));
             String name = cursor.getString(cursor.getColumnIndex(myDatabaseHelper.NAME));
             String place = cursor.getString(cursor.getColumnIndex(myDatabaseHelper.PLACE));
             mapData.setName(name);
@@ -69,6 +70,7 @@ public class MyDatabaseAdapter{
 
     static class MyDatabaseHelper extends SQLiteOpenHelper{
 
+        //SQLite Database schema setup
         private static final String DATABASE_NAME = "fastmapsdatabse";
         private static final String TABLE_NAME = "FASTMAPSTABLE";
         private static final int DATABASE_VERSION = 1;
@@ -91,7 +93,6 @@ public class MyDatabaseAdapter{
     public void onCreate(SQLiteDatabase db) {
         try{
             db.execSQL(CREATE_TABLE);
-            Toast.makeText(context, "onCreate", Toast.LENGTH_LONG).show();
         }
         catch (SQLException e) {
             Toast.makeText(context, "" + e, Toast.LENGTH_LONG).show();

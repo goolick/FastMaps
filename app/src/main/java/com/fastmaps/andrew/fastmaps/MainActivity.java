@@ -29,11 +29,9 @@ import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
 
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView mRecyclerView;
+    static RecyclerView.Adapter mAdapter;
 
     private static List<MapData> mapDataList = new ArrayList<>(25);
-    public static Boolean Updated = false;
     public static LatLngBounds CURRENT_BOUNDS;
     public static int Radio_selected = 3;
     public final long ADD_DURATION = 700;
@@ -44,6 +42,7 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        RecyclerView mRecyclerView;
         RecyclerView.LayoutManager mLayoutManager;
         FloatingActionButton floatingActionButton;
         RadioButton walkButton;
@@ -108,12 +107,12 @@ public class MainActivity extends ActionBarActivity {
         // current location
         LocationManager mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         Location location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-
+    if (location != null) {
         LatLng latlng1 = new LatLng(location.getLatitude() - 1, location.getLongitude() - 1);
         LatLng latlng2 = new LatLng(location.getLatitude() + 1, location.getLongitude() + 1);
 
         CURRENT_BOUNDS = new LatLngBounds(latlng1, latlng2);
-
+    }
     }
 
     @Override
@@ -134,16 +133,6 @@ public class MainActivity extends ActionBarActivity {
         super.onStop();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (Updated) {
-            mRecyclerView.getAdapter().notifyDataSetChanged();
-            Log.d("updated", "updated dataset");
-        }
-        Log.d("OnResume", "call to OnResume");
-    }
-
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -152,15 +141,12 @@ public class MainActivity extends ActionBarActivity {
 
     public static void AddData(String name, String place){
     // Take in a name and place and add them to the list of MapData */
-
         MapData newMapData = new MapData();
         newMapData.setName(name);
         newMapData.setPlace(place);
-        Log.e("Name and address","Name = " + newMapData.getName() + " place = " + newMapData.getPlace());
+        Log.e("Name and address", "Name = " + newMapData.getName() + " place = " + newMapData.getPlace());
         mapDataList.add(newMapData);
-        Log.e("AddData","Data added. Count = " + mapDataList.size());
-        Updated = false;
-
+        Log.e("AddData", "Data added. Count = " + mapDataList.size());
     }
 
     // Public method to open the SearchDialog, which allows the user to enter a new map location
