@@ -4,6 +4,8 @@ import android.app.FragmentManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -19,12 +21,15 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.melnykov.fab.FloatingActionButton;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -37,7 +42,7 @@ public class MainActivity extends ActionBarActivity {
     public static final int WALK_BUTTON = 1;
     public static final int BIKE_BUTTON = 2;
     public static final int DRIVE_BUTTON = 3;
-    public static final int MIN_ROW = 1;
+    public static final int MIN_ROW = 0;
     public static final int MAX_ROW = 100;
     private static List<MapData> mapDataList = new ArrayList<>(MAX_ROW);
 
@@ -102,19 +107,58 @@ public class MainActivity extends ActionBarActivity {
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setItemAnimator(defaultItemAnimator);
+        //mRecyclerView.setItemAnimator(defaultItemAnimator);
+        mRecyclerView.setItemAnimator(null);
 
+        DragSortRecycler dragSortRecycler = new DragSortRecycler();
+        dragSortRecycler.setViewHandleId(R.id.primary_text);
+        dragSortRecycler.setFloatingAlpha(0.4f);
+        dragSortRecycler.setFloatingBgColor(0x802196F3);
+        dragSortRecycler.setAutoScrollSpeed(0.3f);
+        dragSortRecycler.setAutoScrollWindow(0.1f);
+
+        dragSortRecycler.setOnItemMovedListener(new DragSortRecycler.OnItemMovedListener() {
+            @Override
+            public void onItemMoved(int from, int to) {
+                Log.d("onItemMoved", "onItemMoved " + from + " to " + to);
+                MapData mapData = mapDataList.remove(from);
+                mapDataList.add(to, mapData);
+                mAdapter.notifyDataSetChanged();
+            }
+        });
+        dragSortRecycler.setOnDragStateChangedListener(new DragSortRecycler.OnDragStateChangedListener() {
+            @Override
+            public void onDragStart() {
+                Log.d("onDragStart", "Drag Start");
+            }
+
+            @Override
+            public void onDragStop() {
+                Log.d("onDragStart", "Drag Stop");
+            }
+        });
+
+        mRecyclerView.addItemDecoration(dragSortRecycler);
+        mRecyclerView.addOnItemTouchListener(dragSortRecycler);
+        mRecyclerView.setOnScrollListener(dragSortRecycler.getScrollListener());
+    }
+
+    @Override
+    protected void onResume() {
         // Use Network provided location to create bounds, used for Place autocomplete to favor
         // current location
         LocationManager mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         Location location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-    if (location != null) {
-        LatLng latlng1 = new LatLng(location.getLatitude() - 1, location.getLongitude() - 1);
-        LatLng latlng2 = new LatLng(location.getLatitude() + 1, location.getLongitude() + 1);
+        if (location != null) {
+            LatLng latlng1 = new LatLng(location.getLatitude() - 1, location.getLongitude() - 1);
+            LatLng latlng2 = new LatLng(location.getLatitude() + 1, location.getLongitude() + 1);
 
-        CURRENT_BOUNDS = new LatLngBounds(latlng1, latlng2);
+            CURRENT_BOUNDS = new LatLngBounds(latlng1, latlng2);
+        }
+
+        super.onResume();
     }
-    }
+
 
     @Override
     protected void onStop() {
@@ -160,19 +204,50 @@ public class MainActivity extends ActionBarActivity {
 
     public static void Navigate(MapData mapData, Context context) {
         Log.d("navigate", "Navigate method called on " + mapData.getPlace());
+        // First, geocode the string supplied from autocomplete
+        String coords = "";
+        Geocoder geocoder = new Geocoder(context, Locale.US);
+        try {
+            // Take first suggestion from geocoder object
+            List<Address> coordinates = geocoder.getFromLocationName(mapData.getPlace(),1);
+
+            //If a geocode result is supplied, use it. Otherwise, use the string from mapData
+            if (coordinates.size() > 0){
+                double latitude = coordinates.get(coordinates.size() - 1).getLatitude();
+                double longitude = coordinates.get(coordinates.size() - 1).getLongitude();
+                coords = (latitude + ", " + longitude);}
+
+            else{
+                coords = mapData.getPlace();}
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         // create intent to navigate to the destination contained in mapData.place
         // switch on selected radio button
         Intent intent;
         switch (Radio_selected){
-            case WALK_BUTTON: intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + mapData.getPlace() + "&mode=w" + "&types=geocode"));
+            case WALK_BUTTON: intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + coords + "&mode=w"));
+                break;
+
+            case BIKE_BUTTON: intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + coords + "&mode=b"));
+                break;
+
+            default: intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + coords));
+                break;
+            /*
+
+            case WALK_BUTTON: intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + mapData.getPlace() + "&mode=w" + "&types=address"));
                  break;
 
-            case BIKE_BUTTON: intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + mapData.getPlace() + "&mode=b" + "&types=geocode"));
+            case BIKE_BUTTON: intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + mapData.getPlace() + "&mode=b" + "&types=address"));
                  break;
 
-            default: intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + mapData.getPlace() + "&types=geocode"));
+            default: intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + mapData.getPlace() + "&types=address"));
                      break;
+            */
+
         }
         // add flag in order to start activity from RecyclerView
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -209,6 +284,7 @@ public class MainActivity extends ActionBarActivity {
         if (id == R.id.action_settings) {
             mapDataList.clear();
             mAdapter.notifyItemRangeRemoved(MIN_ROW,MAX_ROW);
+            mAdapter.notifyDataSetChanged();
         }
         return super.onOptionsItemSelected(item);
     }

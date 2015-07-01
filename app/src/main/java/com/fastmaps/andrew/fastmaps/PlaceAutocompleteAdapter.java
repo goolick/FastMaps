@@ -112,15 +112,16 @@ public class PlaceAutocompleteAdapter
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
                 FilterResults results = new FilterResults();
+                ArrayList<PlaceAutocomplete> tempList;
                 // Skip the autocomplete query if no constraints are given.
 
                 if (constraint != null) {
                     // Query the autocomplete API for the (constraint) search string.
-                    mResultList = getAutocomplete(constraint);
-                    if (mResultList != null) {
+                    tempList = getAutocomplete(constraint);
+                    if (tempList != null) {
                         // The API successfully returned results.
-                        results.values = mResultList;
-                        results.count = mResultList.size();
+                        results.values = tempList;
+                        results.count = tempList.size();
                     }
                 }
                 return results;
@@ -128,6 +129,7 @@ public class PlaceAutocompleteAdapter
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
+                mResultList = (ArrayList<PlaceAutocomplete>)results.values;
                 if (results != null && results.count > 0) {
                     // The API returned at least one result, update the data.
                     notifyDataSetChanged();

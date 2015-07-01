@@ -96,13 +96,16 @@ public class SearchDialog extends DialogFragment{
         Until then, the PlaceAutocompleteAdapter will not return results. Unfiltered results
         should not be given, because several cases have been observed where a non-navigable location
         is supplied. This could lead to the user mistakenly starting a navigation to the incorrect
-        location. For now, Autocomplete will not be used  The bug is being tracked at
+        location. For now, filter will not be used  The bug is being tracked at
         https://code.google.com/p/gmaps-api-issues/issues/detail?id=7933
         */
 
+        /* 6/25, instead of the result from Autocomplete being used directly, the result is
+        geocoded and used for the target of the intent
+        */
         // Create filter to ensure places supplied by Google Place API are navigable
         List<Integer> filterTypes = new ArrayList<>();
-        filterTypes.add(Place.TYPE_STREET_ADDRESS);
+   //     filterTypes.add(Place.TYPE_STREET_ADDRESS);
         AutocompleteFilter filter = AutocompleteFilter.create(filterTypes);
 
         // Create and attach adapter

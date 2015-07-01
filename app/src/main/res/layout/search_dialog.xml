@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:minWidth="500dp"
-    android:theme="@style/translucentDialog"
+    android:theme="@style/AppTheme"
     android:orientation="vertical">
 
     <EditText
@@ -30,6 +30,10 @@
         android:layout_marginBottom="@dimen/abc_action_bar_icon_vertical_padding_material"
         />
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
     <Button
         style="?android:attr/borderlessButtonStyle"
         android:theme="@style/AppTheme"
@@ -38,7 +42,21 @@
         android:text="@string/dialog_confirm"
         android:id="@+id/button"
         android:layout_gravity="end"
-        android:textColor="@color/primaryColor"/>
+        android:textColor="@color/primaryColor"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_alignBottom="@+id/button"
+        android:src="@drawable/powered_by_google_light"
+        android:id="@+id/imageView"
+        android:paddingLeft="@dimen/abc_button_padding_horizontal_material"
+        android:paddingRight="@dimen/abc_button_padding_horizontal_material"
+        android:paddingBottom="@dimen/abc_button_padding_vertical_material" />
+    </RelativeLayout>
 
 </LinearLayout>
