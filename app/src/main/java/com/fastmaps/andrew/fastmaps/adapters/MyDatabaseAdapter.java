@@ -31,14 +31,14 @@ public class MyDatabaseAdapter{
         contentValues.put(myDatabaseHelper.NAME, name);
         contentValues.put(myDatabaseHelper.PLACE, place);
         long id = sqLiteDatabase.insert(myDatabaseHelper.TABLE_NAME, null, contentValues);
-        Log.d("AddData", "Ran AddData on " + name + " id:" + id);
+        //Log.d("AddData", "Ran AddData on " + name + " id:" + id);
         sqLiteDatabase.close();
         return id;
     }
 
     public void DeleteAllData(){
         // method to delete all data from SQLiteDatabase table
-        Log.d("DeleteAllData", "Ran DeleteAllData");
+        //Log.d("DeleteAllData", "Ran DeleteAllData");
         SQLiteDatabase sqLiteDatabase = myDatabaseHelper.getWritableDatabase();
         sqLiteDatabase.execSQL(myDatabaseHelper.DELETE_TABLE);
         sqLiteDatabase.close();
@@ -46,7 +46,7 @@ public class MyDatabaseAdapter{
 
     public List<MapData> GetAllData(){
         // method to retrieve all data from the SQLiteDatabase. Returns mapdataList to MainActivity
-        Log.d("GetAllData", "Ran GetAllData");
+        //Log.d("GetAllData", "Ran GetAllData");
         List<MapData> mapdataList = new ArrayList<>(25);
 
         SQLiteDatabase sqLiteDatabase = myDatabaseHelper.getWritableDatabase();
@@ -60,7 +60,7 @@ public class MyDatabaseAdapter{
             String place = cursor.getString(cursor.getColumnIndex(myDatabaseHelper.PLACE));
             mapData.setName(name);
             mapData.setPlace(place);
-            Log.d("while", "inside while loop " + mapData.getName() + " " + mapData.getPlace());
+            //Log.d("while", "inside while loop " + mapData.getName() + " " + mapData.getPlace());
             mapdataList.add(mapData);
         }
         sqLiteDatabase.close();
@@ -102,7 +102,6 @@ public class MyDatabaseAdapter{
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
         try{
-            Toast.makeText(context, "onUpgrade", Toast.LENGTH_LONG).show();
             db.execSQL(DROP_TABLE);
             onCreate(db);
         }

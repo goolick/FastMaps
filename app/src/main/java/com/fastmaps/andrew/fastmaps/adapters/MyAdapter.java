@@ -22,26 +22,26 @@ public class MyAdapter extends RecyclerView.Adapter <MyAdapter.MyViewHolder>{
     public MyAdapter(List<MapData> mapDataList) {
 
         this.mapDataList = mapDataList;
-        Log.d("constructor", "Constructor called");
+        //Log.d("constructor", "Constructor called");
     }
     public void DeleteRow (int position) {
         mapDataList.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, MainActivity.MAX_ROW);;
-        Log.d("DeleteRow", "ran DeleteRow on row " + position);
+        //Log.d("DeleteRow", "ran DeleteRow on row " + position);
     }
 
     @Override
     public MyViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
         final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_row,parent,false);
         MyViewHolder holder = new MyViewHolder(view);
-        Log.d("onCreateViewHolder", "created MyViewHolder");
+        //Log.d("onCreateViewHolder", "created MyViewHolder");
         return holder;
     }
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
-        Log.d("onBindViewHolder", "ran onBindViewHolder");
+        //Log.d("onBindViewHolder", "ran onBindViewHolder");
         final MapData mapData = mapDataList.get(position);
         holder.primaryText.setText(mapData.getName());
         holder.secondaryText.setText(mapData.getPlace());

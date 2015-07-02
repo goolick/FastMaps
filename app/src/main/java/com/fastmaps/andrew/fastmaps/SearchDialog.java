@@ -56,8 +56,8 @@ public class SearchDialog extends DialogFragment{
                 // If both fields are filled, call the AddData method in MainActivity on the entries
                 Boolean checkName = editTextName.getText().toString().equals(""); // Make sure Name field is filled
                 Boolean checkPlace = autoCompleteTextView.getText().toString().equals(""); // Make sure Place field is filled
-                Log.d("checkName", checkName.toString());
-                Log.d("checkPlace", checkPlace.toString());
+                //Log.d("checkName", checkName.toString());
+                //Log.d("checkPlace", checkPlace.toString());
                 if (checkName || checkPlace) {
                     if (checkPlace) {
                         Toast.makeText(context, "Enter Place", Toast.LENGTH_SHORT).show();

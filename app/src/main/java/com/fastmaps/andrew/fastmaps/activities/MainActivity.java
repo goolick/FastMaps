@@ -108,7 +108,7 @@ public class MainActivity extends ActionBarActivity {
         dragSortRecycler.setOnItemMovedListener(new DragSortRecycler.OnItemMovedListener() {
             @Override
             public void onItemMoved(int from, int to) {
-                Log.d("onItemMoved", "onItemMoved " + from + " to " + to);
+                //Log.d("onItemMoved", "onItemMoved " + from + " to " + to);
                 MapData mapData = mapDataList.remove(from);
                 mapDataList.add(to, mapData);
                 mAdapter.notifyDataSetChanged();
@@ -137,14 +137,14 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onStop() {
-        Log.d("onStop", "onStop run");
+        //Log.d("onStop", "onStop run");
         // When the activity is stopped, replace all data in SQLite database with what is contained
         // in mapDataList variable
         MyDatabaseAdapter myDatabaseAdapter = new MyDatabaseAdapter(this);
         myDatabaseAdapter.DeleteAllData();
         for (int i = 0; i< mapDataList.size(); i++){
             myDatabaseAdapter.AddData(mapDataList.get(i).getName(), mapDataList.get(i).getPlace());
-            Log.d("for", "" + i + " " + mapDataList.get(i).getName() + " " +  mapDataList.get(i).getPlace());
+            //Log.d("for", "" + i + " " + mapDataList.get(i).getName() + " " +  mapDataList.get(i).getPlace());
         }
         // When exiting the activity, reset Radio_Selected to drive, the default
         //Radio_selected = DRIVE_BUTTON;
@@ -164,9 +164,9 @@ public class MainActivity extends ActionBarActivity {
         MapData newMapData = new MapData();
         newMapData.setName(name);
         newMapData.setPlace(place);
-        Log.e("Name and address", "Name = " + newMapData.getName() + " place = " + newMapData.getPlace());
+        //Log.e("Name and address", "Name = " + newMapData.getName() + " place = " + newMapData.getPlace());
         mapDataList.add(newMapData);
-        Log.e("AddData", "Data added. Count = " + mapDataList.size());
+        //Log.e("AddData", "Data added. Count = " + mapDataList.size());
     }
 
     // Public method to open the SearchDialog, which allows the user to enter a new map location
@@ -177,7 +177,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public static void Navigate(MapData mapData, Context context) {
-        Log.d("navigate", "Navigate method called on " + mapData.getPlace());
+        //Log.d("navigate", "Navigate method called on " + mapData.getPlace());
         // First, geocode the string supplied from autocomplete
         String coords = "";
         Geocoder geocoder = new Geocoder(context, Locale.US);
@@ -201,13 +201,13 @@ public class MainActivity extends ActionBarActivity {
         // create intent to navigate to the destination contained in mapData.place
         // switch on selected radio button
         if (walkButton.isChecked()){
-            Radio_selected = 1;
+            Radio_selected = WALK_BUTTON;
         }
         if (bikeButton.isChecked()){
-            Radio_selected = 2;
+            Radio_selected = BIKE_BUTTON;
         }
         if (driveButton.isChecked()){
-            Radio_selected = 3;
+            Radio_selected = DRIVE_BUTTON;
         }
 
         Intent intent;
@@ -236,7 +236,7 @@ public class MainActivity extends ActionBarActivity {
 
     // method to open a location in maps application, given a MapData object
         public static void Direct(MapData mapData, Context context) {
-        Log.d("Direct", "Direct method called on " + mapData.getPlace());
+        //Log.d("Direct", "Direct method called on " + mapData.getPlace());
 
         try {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + mapData.getPlace()));

@@ -157,7 +157,7 @@ public class PlaceAutocompleteAdapter
      */
     private ArrayList<PlaceAutocomplete> getAutocomplete(CharSequence constraint) {
         if (mGoogleApiClient.isConnected()) {
-            Log.i(TAG, "Starting autocomplete query for: " + constraint);
+            //Log.i(TAG, "Starting autocomplete query for: " + constraint);
 
             // Submit the query to the autocomplete API and retrieve a PendingResult that will
             // contain the results when the query completes.
@@ -175,13 +175,13 @@ public class PlaceAutocompleteAdapter
             final Status status = autocompletePredictions.getStatus();
             if (!status.isSuccess()) {
 
-                Log.e(TAG, "Error getting autocomplete prediction API call: " + status.toString());
+                //Log.e(TAG, "Error getting autocomplete prediction API call: " + status.toString());
                 autocompletePredictions.release();
                 return null;
             }
 
-            Log.i(TAG, "Query completed. Received " + autocompletePredictions.getCount()
-                    + " predictions.");
+            //Log.i(TAG, "Query completed. Received " + autocompletePredictions.getCount()
+                   // + " predictions.");
 
             // Copy the results into our own data structure, because we can't hold onto the buffer.
             // AutocompletePrediction objects encapsulate the API response (place ID and description).
