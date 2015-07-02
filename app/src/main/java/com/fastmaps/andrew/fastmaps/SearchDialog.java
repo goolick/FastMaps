@@ -14,10 +14,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.fastmaps.andrew.fastmaps.activities.MainActivity;
+import com.fastmaps.andrew.fastmaps.adapters.PlaceAutocompleteAdapter;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.AutocompleteFilter;
-import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 
 import java.util.ArrayList;
@@ -40,15 +41,6 @@ public class SearchDialog extends DialogFragment{
         // Add title to Dialog
         getDialog().setTitle("Add Shortcut");
 
-/*        // Maximize the width of the dialog box
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(getDialog().getWindow().getAttributes());
-        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-        lp.height= WindowManager.LayoutParams.WRAP_CONTENT;
-        getDialog().show();
-
-        getDialog().getWindow().setAttributes(lp);
-*/
         // Get layout components
         final EditText editTextName = (EditText) view.findViewById(R.id.editTextName);
         final AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) view.findViewById(R.id.autoCompleteTextView);
@@ -75,7 +67,7 @@ public class SearchDialog extends DialogFragment{
                     }
                 }
                 else {
-                    // Call AddData and set the Updated flag as true
+                    // Call AddData
                     MainActivity.AddData(editTextName.getText().toString(), autoCompleteTextView.getText().toString());
                     MainActivity.mAdapter.notifyItemInserted(MainActivity.mAdapter.getItemCount());
                     dismiss();

@@ -1,4 +1,4 @@
-package com.fastmaps.andrew.fastmaps;
+package com.fastmaps.andrew.fastmaps.activities;
 
 import android.app.FragmentManager;
 import android.content.ActivityNotFoundException;
@@ -21,7 +21,12 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
-
+import com.fastmaps.andrew.fastmaps.DragSortRecycler;
+import com.fastmaps.andrew.fastmaps.MapData;
+import com.fastmaps.andrew.fastmaps.adapters.MyAdapter;
+import com.fastmaps.andrew.fastmaps.adapters.MyDatabaseAdapter;
+import com.fastmaps.andrew.fastmaps.R;
+import com.fastmaps.andrew.fastmaps.SearchDialog;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.melnykov.fab.FloatingActionButton;
@@ -34,26 +39,27 @@ import java.util.Locale;
 
 public class MainActivity extends ActionBarActivity {
 
-    static RecyclerView.Adapter mAdapter;
+    public static RecyclerView.Adapter mAdapter;
     public static LatLngBounds CURRENT_BOUNDS;
     public static int Radio_selected = 3;
-    public final long ADD_DURATION = 500;
-    public final long DELETE_DURATION = 700;
+    public final long ADD_DURATION = 650;
+    public final long DELETE_DURATION = 650;
     public static final int WALK_BUTTON = 1;
     public static final int BIKE_BUTTON = 2;
     public static final int DRIVE_BUTTON = 3;
     public static final int MIN_ROW = 0;
     public static final int MAX_ROW = 100;
     private static List<MapData> mapDataList = new ArrayList<>(MAX_ROW);
+    public static RadioButton walkButton;
+    public static RadioButton bikeButton;
+    public static RadioButton driveButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         RecyclerView mRecyclerView;
         RecyclerView.LayoutManager mLayoutManager;
         FloatingActionButton floatingActionButton;
-        RadioButton walkButton;
-        RadioButton bikeButton;
-        RadioButton driveButton;
+
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -62,24 +68,6 @@ public class MainActivity extends ActionBarActivity {
         walkButton = (RadioButton) findViewById(R.id.walk_button);
         driveButton = (RadioButton) findViewById(R.id.drive_button);
         bikeButton = (RadioButton) findViewById(R.id.bike_button);
-        walkButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Radio_selected = WALK_BUTTON;
-            }
-        });
-        bikeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Radio_selected = BIKE_BUTTON;
-            }
-        });
-        driveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Radio_selected = DRIVE_BUTTON;
-            }
-        });
 
         // Get data from SQLiteDatabse
         MyDatabaseAdapter myDatabaseAdapter = new MyDatabaseAdapter(this);
@@ -107,13 +95,13 @@ public class MainActivity extends ActionBarActivity {
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
-        //mRecyclerView.setItemAnimator(defaultItemAnimator);
-        mRecyclerView.setItemAnimator(null);
+        mRecyclerView.setItemAnimator(defaultItemAnimator);
 
+        // Set up DragSortRecycler for drag/drop rearrangement
         DragSortRecycler dragSortRecycler = new DragSortRecycler();
         dragSortRecycler.setViewHandleId(R.id.primary_text);
         dragSortRecycler.setFloatingAlpha(0.4f);
-        dragSortRecycler.setFloatingBgColor(0x802196F3);
+        dragSortRecycler.setFloatingBgColor(0x8090CAF9);
         dragSortRecycler.setAutoScrollSpeed(0.3f);
         dragSortRecycler.setAutoScrollWindow(0.1f);
 
@@ -124,17 +112,6 @@ public class MainActivity extends ActionBarActivity {
                 MapData mapData = mapDataList.remove(from);
                 mapDataList.add(to, mapData);
                 mAdapter.notifyDataSetChanged();
-            }
-        });
-        dragSortRecycler.setOnDragStateChangedListener(new DragSortRecycler.OnDragStateChangedListener() {
-            @Override
-            public void onDragStart() {
-                Log.d("onDragStart", "Drag Start");
-            }
-
-            @Override
-            public void onDragStop() {
-                Log.d("onDragStart", "Drag Stop");
             }
         });
 
@@ -155,15 +132,13 @@ public class MainActivity extends ActionBarActivity {
 
             CURRENT_BOUNDS = new LatLngBounds(latlng1, latlng2);
         }
-
         super.onResume();
     }
-
 
     @Override
     protected void onStop() {
         Log.d("onStop", "onStop run");
-        // When the activity is stopped, replace all data in SQLite databse with what is contained
+        // When the activity is stopped, replace all data in SQLite database with what is contained
         // in mapDataList variable
         MyDatabaseAdapter myDatabaseAdapter = new MyDatabaseAdapter(this);
         myDatabaseAdapter.DeleteAllData();
@@ -171,9 +146,9 @@ public class MainActivity extends ActionBarActivity {
             myDatabaseAdapter.AddData(mapDataList.get(i).getName(), mapDataList.get(i).getPlace());
             Log.d("for", "" + i + " " + mapDataList.get(i).getName() + " " +  mapDataList.get(i).getPlace());
         }
-
         // When exiting the activity, reset Radio_Selected to drive, the default
-        Radio_selected = DRIVE_BUTTON;
+        //Radio_selected = DRIVE_BUTTON;
+
 
         super.onStop();
     }
@@ -199,7 +174,6 @@ public class MainActivity extends ActionBarActivity {
         FragmentManager fragmentManager = getFragmentManager();
         SearchDialog searchDialog = new SearchDialog();
         searchDialog.show(fragmentManager,"");
-
     }
 
     public static void Navigate(MapData mapData, Context context) {
@@ -226,6 +200,16 @@ public class MainActivity extends ActionBarActivity {
 
         // create intent to navigate to the destination contained in mapData.place
         // switch on selected radio button
+        if (walkButton.isChecked()){
+            Radio_selected = 1;
+        }
+        if (bikeButton.isChecked()){
+            Radio_selected = 2;
+        }
+        if (driveButton.isChecked()){
+            Radio_selected = 3;
+        }
+
         Intent intent;
         switch (Radio_selected){
             case WALK_BUTTON: intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + coords + "&mode=w"));
@@ -236,18 +220,6 @@ public class MainActivity extends ActionBarActivity {
 
             default: intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + coords));
                 break;
-            /*
-
-            case WALK_BUTTON: intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + mapData.getPlace() + "&mode=w" + "&types=address"));
-                 break;
-
-            case BIKE_BUTTON: intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + mapData.getPlace() + "&mode=b" + "&types=address"));
-                 break;
-
-            default: intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + mapData.getPlace() + "&types=address"));
-                     break;
-            */
-
         }
         // add flag in order to start activity from RecyclerView
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -257,11 +229,13 @@ public class MainActivity extends ActionBarActivity {
         try {
             context.getApplicationContext().startActivity(intent);
         } catch (ActivityNotFoundException e) {
-            Toast.makeText(context.getApplicationContext(), "Install Google Maps for best results", Toast.LENGTH_LONG)
+            Toast.makeText(context.getApplicationContext(), "Please install a map application such as Google Maps", Toast.LENGTH_LONG)
                     .show();
         }
         }
-    public static void Direct(MapData mapData, Context context) {
+
+    // method to open a location in maps application, given a MapData object
+        public static void Direct(MapData mapData, Context context) {
         Log.d("Direct", "Direct method called on " + mapData.getPlace());
 
         try {
@@ -269,7 +243,7 @@ public class MainActivity extends ActionBarActivity {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.getApplicationContext().startActivity(intent);
         } catch (ActivityNotFoundException e) {
-            Toast.makeText(context.getApplicationContext(), "No Maps application available!", Toast.LENGTH_LONG)
+            Toast.makeText(context.getApplicationContext(), "Please install a map application such as Google Maps", Toast.LENGTH_LONG)
                     .show();
         }
     }
@@ -283,9 +257,9 @@ public class MainActivity extends ActionBarActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             mapDataList.clear();
-            mAdapter.notifyItemRangeRemoved(MIN_ROW,MAX_ROW);
-            mAdapter.notifyDataSetChanged();
+            mAdapter.notifyItemRangeRemoved(MIN_ROW, MAX_ROW);
         }
+
         return super.onOptionsItemSelected(item);
     }
 }

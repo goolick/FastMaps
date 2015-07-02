@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.fastmaps.andrew.fastmaps;
+package com.fastmaps.andrew.fastmaps.adapters;
 
 import android.content.Context;
 import android.util.Log;

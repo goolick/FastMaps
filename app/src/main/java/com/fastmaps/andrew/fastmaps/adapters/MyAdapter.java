@@ -1,4 +1,4 @@
-package com.fastmaps.andrew.fastmaps;
+package com.fastmaps.andrew.fastmaps.adapters;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -10,19 +10,24 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.fastmaps.andrew.fastmaps.MapData;
+import com.fastmaps.andrew.fastmaps.R;
+import com.fastmaps.andrew.fastmaps.activities.MainActivity;
+
 import java.util.Collections;
 import java.util.List;
 
 public class MyAdapter extends RecyclerView.Adapter <MyAdapter.MyViewHolder>{
     List<MapData> mapDataList = Collections.emptyList();
-    MyAdapter ( List<MapData> mapDataList) {
+    public MyAdapter(List<MapData> mapDataList) {
 
         this.mapDataList = mapDataList;
         Log.d("constructor", "Constructor called");
     }
     public void DeleteRow (int position) {
         mapDataList.remove(position);
-        notifyDataSetChanged();
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, MainActivity.MAX_ROW);;
         Log.d("DeleteRow", "ran DeleteRow on row " + position);
     }
 
