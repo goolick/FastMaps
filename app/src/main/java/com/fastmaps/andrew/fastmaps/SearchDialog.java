@@ -70,6 +70,7 @@ public class SearchDialog extends DialogFragment{
                     // Call AddData
                     MainActivity.AddData(editTextName.getText().toString(), autoCompleteTextView.getText().toString());
                     MainActivity.mAdapter.notifyItemInserted(MainActivity.mAdapter.getItemCount());
+                    MainActivity.ShowButtons();
                     dismiss();
                     }
             }

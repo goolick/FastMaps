@@ -69,6 +69,7 @@ public class MainActivity extends ActionBarActivity {
         driveButton = (RadioButton) findViewById(R.id.drive_button);
         bikeButton = (RadioButton) findViewById(R.id.bike_button);
 
+
         // Get data from SQLiteDatabse
         MyDatabaseAdapter myDatabaseAdapter = new MyDatabaseAdapter(this);
         mapDataList = myDatabaseAdapter.GetAllData();
@@ -132,7 +133,26 @@ public class MainActivity extends ActionBarActivity {
 
             CURRENT_BOUNDS = new LatLngBounds(latlng1, latlng2);
         }
+
+        // Make navigation type buttons invisible if there is nothing in the list
+        if (mapDataList.isEmpty()) {
+            HideButtons();
+        }
+        else {
+            ShowButtons();
+        }
         super.onResume();
+    }
+    public static void HideButtons() {
+        bikeButton.setVisibility(View.INVISIBLE);
+        driveButton.setVisibility(View.INVISIBLE);
+        walkButton.setVisibility(View.INVISIBLE);
+    }
+
+    public static void ShowButtons() {
+        bikeButton.setVisibility(View.VISIBLE);
+        driveButton.setVisibility(View.VISIBLE);
+        walkButton.setVisibility(View.VISIBLE);
     }
 
     @Override
