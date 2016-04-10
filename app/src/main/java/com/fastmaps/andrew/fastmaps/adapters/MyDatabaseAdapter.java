@@ -31,7 +31,7 @@ public class MyDatabaseAdapter{
         contentValues.put(myDatabaseHelper.NAME, name);
         contentValues.put(myDatabaseHelper.PLACE, place);
         long id = sqLiteDatabase.insert(myDatabaseHelper.TABLE_NAME, null, contentValues);
-        //Log.d("AddData", "Ran AddData on " + name + " id:" + id);
+        //Log.d("addData", "Ran addData on " + name + " id:" + id);
         sqLiteDatabase.close();
         return id;
     }

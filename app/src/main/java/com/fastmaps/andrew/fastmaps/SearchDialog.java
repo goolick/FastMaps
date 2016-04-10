@@ -5,7 +5,6 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +25,13 @@ import java.util.List;
 
 public class SearchDialog extends DialogFragment{
 
+    public static final String SEARCH_ARGS_NAME = "ARG_NAME";
+    public static final String SEARCH_ARGS_ADDRESS = "ARG_ADDRESS";
+    public static final String SEARCH_ARGS_POSITION = "ARG_POSITION";
+    private String name = "";
+    private String address = "";
+    private int position = -1;
+    private MainActivity activity;
     /**
      * GoogleApiClient wraps our service connection to Google Play Services and provides access
      * to the user's sign in state as well as the Google's APIs.
@@ -33,17 +39,32 @@ public class SearchDialog extends DialogFragment{
     protected GoogleApiClient mGoogleApiClient;
     public PlaceAutocompleteAdapter mAdapter;
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        this.activity = (MainActivity) getActivity();
+        if (getArguments() != null){
+            name = getArguments().getString(SEARCH_ARGS_NAME);
+            address = getArguments().getString(SEARCH_ARGS_ADDRESS);
+            position = getArguments().getInt(SEARCH_ARGS_POSITION);
+        }
+    }
+
+    private boolean isEditing(){
+        return position != -1;
+    }
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.search_dialog, container);
 
-        // Add title to Dialog
         getDialog().setTitle("Add Shortcut");
-
-        // Get layout components
         final EditText editTextName = (EditText) view.findViewById(R.id.editTextName);
         final AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) view.findViewById(R.id.autoCompleteTextView);
+
+        // Initialize, in case something was supplied to fragment
+        editTextName.setText(name);
+        autoCompleteTextView.setText(address);
 
         // Get context from activity that called the dialog box
         final Context context = getActivity();
@@ -53,24 +74,31 @@ public class SearchDialog extends DialogFragment{
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // If both fields are filled, call the AddData method in MainActivity on the entries
-                Boolean checkName = editTextName.getText().toString().equals(""); // Make sure Name field is filled
-                Boolean checkPlace = autoCompleteTextView.getText().toString().equals(""); // Make sure Place field is filled
-                //Log.d("checkName", checkName.toString());
+                // If both fields are filled, call the addData method in MainActivity on the entries
+                boolean nameIsMissing = editTextName.getText().toString().equals(""); // Make sure Name field is filled
+                boolean placeIsMissing = autoCompleteTextView.getText().toString().equals(""); // Make sure Place field is filled
+                //Log.d("nameIsMissing", nameIsMissing.toString());
                 //Log.d("checkPlace", checkPlace.toString());
-                if (checkName || checkPlace) {
-                    if (checkPlace) {
+                if (nameIsMissing || placeIsMissing) {
+                    if (placeIsMissing) {
                         Toast.makeText(context, "Enter Place", Toast.LENGTH_SHORT).show();
-                    }
-                    else {
+                    } else {
                         Toast.makeText(context, "Enter Name", Toast.LENGTH_SHORT).show();
                     }
-                }
-                else {
-                    // Call AddData
-                    MainActivity.AddData(editTextName.getText().toString(), autoCompleteTextView.getText().toString());
-                    MainActivity.mAdapter.notifyItemInserted(MainActivity.mAdapter.getItemCount());
-                    MainActivity.ShowButtons();
+                } else {
+                    if (isEditing()){
+                        if (activity != null){
+                            activity.mAdapter.deleteRow(position);
+                            activity.addData(editTextName.getText().toString(), autoCompleteTextView.getText().toString());
+                            activity.mAdapter.notifyItemChanged(position);
+                        }
+                    } else {
+                        if (activity != null){
+                            activity.addData(editTextName.getText().toString(), autoCompleteTextView.getText().toString());
+                            activity.mAdapter.notifyItemInserted(activity.mAdapter.getItemCount());
+                            activity.showButtons();
+                        }
+                    }
                     dismiss();
                     }
             }

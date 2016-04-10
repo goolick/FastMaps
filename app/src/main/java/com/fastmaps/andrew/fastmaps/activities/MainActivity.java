@@ -14,7 +14,6 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,7 +38,7 @@ import java.util.Locale;
 
 public class MainActivity extends ActionBarActivity {
 
-    public static RecyclerView.Adapter mAdapter;
+    public MyAdapter mAdapter;
     public static LatLngBounds CURRENT_BOUNDS;
     public static int Radio_selected = 3;
     public final long ADD_DURATION = 650;
@@ -79,13 +78,13 @@ public class MainActivity extends ActionBarActivity {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShowDialog();
+                showDialog();
             }
         });
 
         // Create LinearLayoutManager and Adapter
         mLayoutManager = new LinearLayoutManager(this);
-        mAdapter = new MyAdapter(mapDataList);
+        mAdapter = new MyAdapter(this, mapDataList);
 
         // Set up DefaultItemAnimator with fade in/out times
         DefaultItemAnimator defaultItemAnimator = new DefaultItemAnimator();
@@ -139,7 +138,7 @@ public class MainActivity extends ActionBarActivity {
             HideButtons();
         }
         else {
-            ShowButtons();
+            showButtons();
         }
         super.onResume();
     }
@@ -149,7 +148,7 @@ public class MainActivity extends ActionBarActivity {
         walkButton.setVisibility(View.INVISIBLE);
     }
 
-    public static void ShowButtons() {
+    public void showButtons() {
         bikeButton.setVisibility(View.VISIBLE);
         driveButton.setVisibility(View.VISIBLE);
         walkButton.setVisibility(View.VISIBLE);
@@ -179,18 +178,18 @@ public class MainActivity extends ActionBarActivity {
         return true;
     }
 
-    public static void AddData(String name, String place){
+    public void addData(String name, String place){
     // Take in a name and place and add them to the list of MapData */
         MapData newMapData = new MapData();
         newMapData.setName(name);
         newMapData.setPlace(place);
         //Log.e("Name and address", "Name = " + newMapData.getName() + " place = " + newMapData.getPlace());
         mapDataList.add(newMapData);
-        //Log.e("AddData", "Data added. Count = " + mapDataList.size());
+        //Log.e("addData", "Data added. Count = " + mapDataList.size());
     }
 
     // Public method to open the SearchDialog, which allows the user to enter a new map location
-    public void ShowDialog(){
+    public void showDialog(){
         FragmentManager fragmentManager = getFragmentManager();
         SearchDialog searchDialog = new SearchDialog();
         searchDialog.show(fragmentManager,"");
