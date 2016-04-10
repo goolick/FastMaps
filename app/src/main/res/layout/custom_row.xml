@@ -25,10 +25,7 @@
             android:textSize="@dimen/abc_text_size_body_2_material"
             android:textColor="#828282"
             android:text="@string/default_secondary_text"
-            android:layout_marginBottom="@dimen/abc_action_bar_default_padding_material"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_toLeftOf="@+id/image_button_dir"
             android:layout_toStartOf="@+id/image_button_dir"
             android:gravity="start"/>
 
@@ -41,7 +38,6 @@
             android:layout_height="50dp"
             android:background="@android:color/transparent"
             android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             />
 
@@ -53,9 +49,7 @@
             android:layout_height="50dp"
             android:background="@android:color/transparent"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/image_button_nav"
             android:layout_toStartOf="@+id/image_button_nav"
-            android:paddingRight="@dimen/abc_button_padding_horizontal_material"
             android:paddingEnd="@dimen/abc_button_padding_horizontal_material"
 
 

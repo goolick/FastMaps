@@ -397,6 +397,11 @@ public class DragSortRecycler extends RecyclerView.ItemDecoration implements Rec
         rv.invalidateItemDecorations();// Redraw
     }
 
+    @Override
+    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+    }
+
     private void setIsDragging(final boolean dragging) {
         if(dragging != isDragging) {
             isDragging = dragging;

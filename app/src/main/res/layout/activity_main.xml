@@ -23,7 +23,6 @@
         android:layout_gravity="bottom|end"
         android:src="@drawable/ic_add_white_24dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/my_recycler_view"
         android:layout_alignEnd="@+id/my_recycler_view"
         android:layout_marginBottom="@dimen/abc_action_bar_icon_vertical_padding_material"/>
 
@@ -34,8 +33,6 @@
         android:layout_height="fill_parent"
         android:layout_below="@+id/my_recycler_view"
         android:orientation="horizontal"
-        android:paddingTop="@dimen/abc_action_bar_default_padding_material"
-        android:layout_toLeftOf="@+id/fab"
         android:layout_toStartOf="@+id/fab"
         android:checkedButton="@+id/drive_button">
 
